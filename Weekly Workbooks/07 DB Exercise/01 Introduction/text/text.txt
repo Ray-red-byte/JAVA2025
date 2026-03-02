@@ -1,0 +1,3 @@
+This workbook will lead you through the implementation of your first really significant Java program. The aim of this exercise is to build a database server (from the ground up !).
+This will not only give you more practice writing complex Java programmes,
+as well as providing you with hands-on experience of using query languages.

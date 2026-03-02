@@ -1,0 +1,23 @@
+In this exercise, you will build a relational database server from scratch.
+This server must receive incoming requests (conforming to a standard query language)
+and then interrogate and manipulate a set of stored records.
+Your server will maintain persistent data as a number of files on your filesystem.
+You will not be required to implement a client application - this will be provided for you 
+(to allow you to connect to your server and check that is it working correctly).
+
+As usual, you have been provided with a <a href="resources/cw-db" target="_blank">Maven project</a>
+to help get you started with this exercise.
+As before, there is a <a href="resources/cw-db/src/test/java/edu/uob/ExampleDBTests.java" target="_blank">template test script</a>
+for you to use - make sure you add suitable test cases to this script to ensure that your application is
+fully and systematically tested.
+
+It is **essential** that your server is _robust_ - you should detect and trap errors effectively
+and ensure that the server continues running at all times. Just imagine a world in which servers
+had to be manually restarted every time something unexpected was encountered.
+It's going to be very difficult for your server to pass the tests if it has crashed !
+
+Note that your main class MUST be called `DBServer` and MUST include the following constructor method and input handling method:
+
+* `public DBServer()`
+* `public String handleCommand(String)`
+
