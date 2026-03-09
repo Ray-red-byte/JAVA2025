@@ -101,4 +101,14 @@ public class ExampleDBTests {
         assertFalse(response.contains("[OK]"), "An attempt was made to access a non-existent table, however an [OK] tag was returned");
     }
 
+    @Test
+    public void testUseDatabase() {
+        sendCommandToServer("CREATE DATABASE my_data;");
+        String response = sendCommandToServer("USE my_data;");
+        assertTrue(response.contains("[OK]"), "USE command failed for an existing database");
+
+        String errorResponse = sendCommandToServer("USE non_existent_db;");
+        assertTrue(errorResponse.contains("[ERROR]"), "Server should error when USE is called on missing database");
+    }
+
 }
