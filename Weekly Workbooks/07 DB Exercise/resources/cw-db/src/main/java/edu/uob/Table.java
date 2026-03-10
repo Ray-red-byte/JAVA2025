@@ -52,6 +52,17 @@ public class Table {
         }
     }
 
+    public void removeTable(String folderPath) throws IOException {
+        String filePath = folderPath + File.separator + tableName.toLowerCase() + ".tab";
+        File tableFile = new File(filePath);
+
+        try {
+            tableFile.delete();
+        }  catch (Exception ex) {
+            System.err.println("Error deleting table file: " + tableFile.getAbsolutePath());
+        }
+    }
+
     public int getNextId() {
         return this.nextId;
     }

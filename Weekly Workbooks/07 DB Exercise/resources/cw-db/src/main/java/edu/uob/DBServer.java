@@ -105,6 +105,8 @@ public class DBServer {
                     return handleAlterCommand(tokens, cleanedCommand);
                 case "DELETE":
                     return handleDeleteCommand(tokens, cleanedCommand);
+                case "DROP":
+                    return handleDropCommand(tokens, cleanedCommand);
                 default:
                     return "[ERROR] Unknown command: " + trigger;
             }
@@ -293,7 +295,11 @@ public class DBServer {
         if (!this.activeTables.containsKey(tableName)) {return  "[ERROR] Table " + tableName + " does not exist";}
         Table table = this.activeTables.get(tableName);
 
-        String selectTarget = fullCommand.substring(1, fromIndex).trim();
+        // Find the exact character position of " FROM " in the string
+        int stringFromIndex = fullCommand.toUpperCase().indexOf(" FROM ");
+        // Extract everything between "SELECT" (which is 6 characters long) and " FROM "
+        String selectTarget = fullCommand.substring(6, stringFromIndex).trim();
+
         boolean selectAll = selectTarget.equals("*");
 
         String[] targetColumns = selectAll ? new String[0] : selectTarget.split(",");
@@ -310,7 +316,7 @@ public class DBServer {
         String whereValue = "";
 
         if (hasWhere) {
-            String whereClause = fullCommand.substring(fullCommand.toUpperCase().indexOf(" WHERE ")).trim();
+            String whereClause = fullCommand.substring(fullCommand.toUpperCase().indexOf(" WHERE ") + 7).trim();
             // Assuming basic format: column = 'value'
             String[] whereParts = whereClause.split("==");
             if (whereParts.length != 2) {
@@ -326,6 +332,34 @@ public class DBServer {
 
             if (!table.getColumnNames().contains(whereColumn)) {
                 return "[ERROR] WHERE condition column " + whereColumn + " does not exist.";
+            }
+        }
+
+        // Parse JOIN clause
+        int joinIndex = -1;
+        int onIndex = -1;
+
+        for (int i = 0; i < tokens.length; i++) {
+            if (tokens[i].equalsIgnoreCase("JOIN")) joinIndex = i;
+            if (tokens[i].equalsIgnoreCase("ON")) onIndex = i;
+        }
+
+        if (joinIndex != -1 && onIndex != -1) {
+            String rightTableName = tokens[joinIndex + 1].toLowerCase();
+            if (!this.activeTables.containsKey(rightTableName)) {
+                return "[ERROR] Joined table " + rightTableName + " does not exist";
+            }
+            Table rightTable = this.activeTables.get(rightTableName);
+
+            // Extract the columns to join on (e.g., ON col1 == col2)
+            String leftCol = tokens[onIndex + 1];
+            String rightCol = tokens[onIndex + 3];
+
+            try {
+                // Magic happens here: Overwrite 'table' with the newly joined table!
+                table = TableJoiner.performJoin(table, rightTable, leftCol, rightCol);
+            } catch (Exception e) {
+                return "[ERROR] " + e.getMessage();
             }
         }
 
@@ -354,7 +388,7 @@ public class DBServer {
                 }
 
                 if (!rowValue.equals(whereValue)) {
-                    continue; // Skip this row, condition not met
+                    continue;
                 }
             }
 
@@ -635,6 +669,32 @@ public class DBServer {
             return "[OK] Deleted " + deletedCount + " rows successfully.";
         } catch (IOException e) {
             return "[ERROR] Failed to save table to disk: " + e.getMessage();
+        }
+    }
+
+    private String handleDropCommand(String[] tokens, String fullCommand) {
+        if (this.currentDatabase == null || this.currentDatabase.isEmpty()) {
+            return "[ERROR] No database selected";
+        }
+        // FIX 1: Change to !tokens[1].equalsIgnoreCase to allow "TABLE"
+        if (tokens.length < 3 || !tokens[1].equalsIgnoreCase("TABLE")) {
+            return "[ERROR] Invalid DROP command. Expected: DROP TABLE <tablename>";
+        }
+
+        String tableName = tokens[2].toLowerCase();
+        if (!this.activeTables.containsKey(tableName)) {
+            return "[ERROR] Table " + tableName + " does not exist";
+        }
+
+        Table table = this.activeTables.get(tableName);
+
+        try {
+            String dbPath = storageFolderPath + File.separator + this.currentDatabase;
+            table.removeTable(dbPath);
+            this.activeTables.remove(tableName);
+            return "[OK] Dropped " + tableName + " successfully";
+        } catch (IOException e) {
+            return "[ERROR] Failed to delete table file: " + e.getMessage();
         }
     }
 
