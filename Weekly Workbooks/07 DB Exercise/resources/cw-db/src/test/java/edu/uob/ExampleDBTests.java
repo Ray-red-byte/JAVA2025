@@ -276,4 +276,35 @@ public class ExampleDBTests {
         assertTrue(likeNumber.contains("75"), "75 contains 5");
         assertFalse(likeNumber.contains("40"), "40 does not contain 5");
     }
+
+    @Test
+    public void testErrorHandling() {
+        server.handleCommand("DROP DATABASE testdb_errors;");
+        server.handleCommand("CREATE DATABASE testdb_errors;");
+        server.handleCommand("USE testdb_errors;");
+
+        // 1. Duplicate columns on Create
+        String dupCol = server.handleCommand("CREATE TABLE bad_table (name, age, name);");
+        assertTrue(dupCol.startsWith("[ERROR]"), "Should reject duplicate column names");
+
+        // Setup a valid table for the rest of the tests
+        server.handleCommand("CREATE TABLE users (name, age);");
+
+        // 2. Too many values on Insert
+        String tooMany = server.handleCommand("INSERT INTO users VALUES ('Simon', 25, 'Extra Data');");
+        assertTrue(tooMany.startsWith("[ERROR]"), "Should reject inserting 3 values into a 2-column table");
+
+        // 3. Too few values on Insert
+        String tooFew = server.handleCommand("INSERT INTO users VALUES ('Simon');");
+        assertTrue(tooFew.startsWith("[ERROR]"), "Should reject inserting 1 value into a 2-column table");
+
+        // 4. Attempting to drop the ID column
+        String dropId = server.handleCommand("ALTER TABLE users DROP id;");
+        assertTrue(dropId.startsWith("[ERROR]"), "Should reject dropping the ID column");
+
+        // 5. Attempting to update the ID column
+        server.handleCommand("INSERT INTO users VALUES ('Simon', 25);");
+        String updateId = server.handleCommand("UPDATE users SET id = '999' WHERE name == 'Simon';");
+        assertTrue(updateId.startsWith("[ERROR]"), "Should reject updating the ID column");
+    }
 }

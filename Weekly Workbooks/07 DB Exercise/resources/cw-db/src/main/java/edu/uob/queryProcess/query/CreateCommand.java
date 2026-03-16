@@ -44,9 +44,12 @@ public class CreateCommand extends DBCommand {
                 String[] cols = fullCommand.substring(start + 1, end).split(",");
                 for (String col : cols) {
                     String cleanCol = col.trim();
-                    // BLOCK RESERVED KEYWORDS FOR COLUMNS
                     if (isReservedKeyword(cleanCol)) {
                         return "[ERROR] Cannot use reserved keyword '" + cleanCol + "' as a column name";
+                    }
+                    // TASK 9 FIX: Check for duplicate columns
+                    if (newTable.getColumnNames().contains(cleanCol)) {
+                        return "[ERROR] Duplicate column name '" + cleanCol + "' is not allowed";
                     }
                     newTable.addColumn(cleanCol);
                 }

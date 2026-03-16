@@ -25,6 +25,13 @@ public class InsertCommand extends DBCommand {
         if (start == -1 || end == -1) return "[ERROR] Missing values in parentheses";
 
         String[] values = fullCommand.substring(start + 1, end).split(",");
+
+        // TASK 9 FIX: Check if they provided the correct number of values
+        // We do size() - 1 because the user does not provide the 'id' value
+        if (values.length != (table.getColumnNames().size() - 1)) {
+            return "[ERROR] Incorrect number of values. Expected " + (table.getColumnNames().size() - 1) + " but got " + values.length;
+        }
+
         Row newRow = new Row(table.getNextId());
 
         for (String val : values) {
@@ -38,7 +45,7 @@ public class InsertCommand extends DBCommand {
         table.addRow(newRow);
         try {
             table.saveToFile(dbManager.getStorageFolderPath() + File.separator + dbManager.getCurrentDatabase());
-            return "[OK] Record inserted successfully";
+            return "[OK]\nRecord inserted successfully";
         } catch (IOException e) {
             return "[ERROR] " + e.getMessage();
         }
