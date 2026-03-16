@@ -111,4 +111,169 @@ public class ExampleDBTests {
         assertTrue(errorResponse.contains("[ERROR]"), "Server should error when USE is called on missing database");
     }
 
+    @Test
+    public void testUpdateCommand() {
+        // Setup the database first!
+        server.handleCommand("CREATE DATABASE testdb;");
+        server.handleCommand("USE testdb;");
+
+        server.handleCommand("CREATE TABLE marks (name, mark, pass);");
+        server.handleCommand("INSERT INTO marks VALUES ('Simon', 65, 'True');");
+        server.handleCommand("INSERT INTO marks VALUES ('Chris', 40, 'False');");
+
+        // Update Simon's mark to 100
+        String updateResponse = server.handleCommand("UPDATE marks SET mark = '100' WHERE name == 'Simon';");
+        assertTrue(updateResponse.startsWith("[OK]"), "Update command should succeed. Server returned: " + updateResponse);
+
+        // Verify the update worked
+        String selectResponse = server.handleCommand("SELECT mark FROM marks WHERE name == 'Simon';");
+        assertTrue(selectResponse.contains("100"), "Simon's mark should now be 100");
+        assertFalse(selectResponse.contains("65"), "Simon's old mark should be gone");
+    }
+
+    @Test
+    public void testAlterTableCommand() {
+        // Setup the database first!
+        server.handleCommand("CREATE DATABASE testdb;");
+        server.handleCommand("USE testdb;");
+
+        server.handleCommand("CREATE TABLE marks (name, mark);");
+        server.handleCommand("INSERT INTO marks VALUES ('Simon', 65);");
+
+        // Add a 'grade' column
+        String addColResponse = server.handleCommand("ALTER TABLE marks ADD grade;");
+        assertTrue(addColResponse.startsWith("[OK]"), "Adding a column should return [OK]. Server returned: " + addColResponse);
+
+        // Drop the 'mark' column
+        String dropColResponse = server.handleCommand("ALTER TABLE marks DROP mark;");
+        assertTrue(dropColResponse.startsWith("[OK]"), "Dropping a column should return [OK]. Server returned: " + dropColResponse);
+
+        // Verify the structure changed
+        String selectResponse = server.handleCommand("SELECT * FROM marks;");
+        assertTrue(selectResponse.contains("grade"), "Header should contain new 'grade' column");
+        assertFalse(selectResponse.contains("mark"), "Header should NOT contain dropped 'mark' column");
+    }
+
+    @Test
+    public void testDropTable() {
+        // Setup the database first!
+        server.handleCommand("CREATE DATABASE testdb;");
+        server.handleCommand("USE testdb;");
+
+        server.handleCommand("CREATE TABLE marks (name, mark);");
+        server.handleCommand("INSERT INTO marks VALUES ('Simon', 65);");
+
+        // Drop the table
+        String dropResponse = server.handleCommand("DROP TABLE marks;");
+        assertTrue(dropResponse.startsWith("[OK]"), "Dropping a table should return [OK]. Server returned: " + dropResponse);
+
+        // Attempting to select from the dropped table should throw an error
+        String selectResponse = server.handleCommand("SELECT * FROM marks;");
+        assertTrue(selectResponse.startsWith("[ERROR]"), "Selecting from a dropped table should fail");
+    }
+
+    @Test
+    public void testRobustErrorHandling() {
+        server.handleCommand("CREATE TABLE marks (name, mark);");
+
+        // 1. Missing WHERE clause on UPDATE
+        String badUpdate = server.handleCommand("UPDATE marks SET mark = '100';");
+        assertTrue(badUpdate.startsWith("[ERROR]"), "UPDATE without WHERE should fail");
+
+        // 2. Inserting into a table that doesn't exist
+        String badInsert = server.handleCommand("INSERT INTO ghost_table VALUES (1, 2);");
+        assertTrue(badInsert.startsWith("[ERROR]"), "Inserting into missing table should fail");
+
+        // 3. Gibberish command
+        String gibberish = server.handleCommand("MAKE ME A SANDWICH;");
+        assertTrue(gibberish.startsWith("[ERROR]"), "Unknown commands should be rejected");
+
+        // 4. Missing parentheses on INSERT
+        String badFormatInsert = server.handleCommand("INSERT INTO marks VALUES 'Simon', 65;");
+        assertTrue(badFormatInsert.startsWith("[ERROR]"), "INSERT with missing parentheses should fail");
+    }
+
+    @Test
+    public void testReservedKeywords() {
+        server.handleCommand("CREATE DATABASE testdb;");
+        server.handleCommand("USE testdb;");
+
+        // 1. Try to create a table named after a keyword
+        String badTable = server.handleCommand("CREATE TABLE select (id, name);");
+        assertTrue(badTable.startsWith("[ERROR]"), "Should not allow 'select' as a table name. Response: " + badTable);
+
+        // 2. Try to create a database named after a keyword
+        String badDatabase = server.handleCommand("CREATE DATABASE where;");
+        assertTrue(badDatabase.startsWith("[ERROR]"), "Should not allow 'where' as a database name. Response: " + badDatabase);
+
+        // 3. Try to add a column named after a keyword
+        server.handleCommand("CREATE TABLE marks (name, mark);");
+        String badColumn = server.handleCommand("ALTER TABLE marks ADD insert;");
+        assertTrue(badColumn.startsWith("[ERROR]"), "Should not allow 'insert' as a column name. Response: " + badColumn);
+    }
+
+    @Test
+    public void testRelationalOperators() {
+        // Use a UNIQUE database name for this test so it doesn't read old data!
+        server.handleCommand("DROP DATABASE testdb_relational;"); // Clean up just in case
+        server.handleCommand("CREATE DATABASE testdb_relational;");
+        server.handleCommand("USE testdb_relational;");
+
+        server.handleCommand("CREATE TABLE marks (name, mark);");
+        server.handleCommand("INSERT INTO marks VALUES ('Simon', 65);");
+        server.handleCommand("INSERT INTO marks VALUES ('Chris', 40);");
+        server.handleCommand("INSERT INTO marks VALUES ('Zack', 80);");
+
+        // 1. Test greater than (Numerical)
+        String greaterThan = server.handleCommand("SELECT * FROM marks WHERE mark > 50;");
+        assertTrue(greaterThan.contains("Simon"), "Simon (65) should be > 50");
+        assertTrue(greaterThan.contains("Zack"), "Zack (80) should be > 50");
+        assertFalse(greaterThan.contains("Chris"), "Chris (40) should NOT be > 50");
+
+        // 2. Test less than or equal to (Numerical)
+        String lessThanEq = server.handleCommand("SELECT * FROM marks WHERE mark <= 65;");
+        assertTrue(lessThanEq.contains("Simon"), "Simon (65) should be <= 65");
+        assertTrue(lessThanEq.contains("Chris"), "Chris (40) should be <= 65");
+        assertFalse(lessThanEq.contains("Zack"), "Zack (80) should NOT be <= 65");
+
+        // 3. Test not equal (String)
+        String notEqual = server.handleCommand("SELECT * FROM marks WHERE name != 'Simon';");
+        assertFalse(notEqual.contains("Simon"), "Simon should be excluded");
+        assertTrue(notEqual.contains("Chris"), "Chris should be included");
+
+        // 4. Test greater than (String comparison - alphabetical)
+        String stringGreater = server.handleCommand("SELECT * FROM marks WHERE name > 'D';");
+        assertTrue(stringGreater.contains("Simon"), "Simon > D");
+        assertTrue(stringGreater.contains("Zack"), "Zack > D");
+        assertFalse(stringGreater.contains("Chris"), "Chris is NOT > D (C comes before D)");
+    }
+
+    @Test
+    public void testLikeOperator() {
+        // Use a UNIQUE database name
+        server.handleCommand("DROP DATABASE testdb_like;");
+        server.handleCommand("CREATE DATABASE testdb_like;");
+        server.handleCommand("USE testdb_like;");
+
+        server.handleCommand("CREATE TABLE marks (name, mark);");
+        server.handleCommand("INSERT INTO marks VALUES ('Simon', 65);");
+        server.handleCommand("INSERT INTO marks VALUES ('Simone', 75);");
+        server.handleCommand("INSERT INTO marks VALUES ('Chris', 40);");
+
+        // 1. Test standard string substring
+        String likeSim = server.handleCommand("SELECT * FROM marks WHERE name LIKE 'Sim';");
+        assertTrue(likeSim.contains("Simon"), "Should match Simon");
+        assertTrue(likeSim.contains("Simone"), "Should match Simone");
+        assertFalse(likeSim.contains("Chris"), "Should NOT match Chris");
+
+        // 2. Test case sensitivity (capital 'O' vs lowercase 'o')
+        String likeCase = server.handleCommand("SELECT * FROM marks WHERE name LIKE 'mOn';");
+        assertFalse(likeCase.contains("Simon"), "LIKE should be case sensitive");
+
+        // 3. Test LIKE on numerical data (should treat it like a string)
+        String likeNumber = server.handleCommand("SELECT * FROM marks WHERE mark LIKE '5';");
+        assertTrue(likeNumber.contains("65"), "65 contains 5");
+        assertTrue(likeNumber.contains("75"), "75 contains 5");
+        assertFalse(likeNumber.contains("40"), "40 does not contain 5");
+    }
 }

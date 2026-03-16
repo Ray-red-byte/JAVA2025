@@ -1,4 +1,4 @@
-package edu.uob;
+package edu.uob.entityManager;
 import java.util.ArrayList;
 
 public class Row {

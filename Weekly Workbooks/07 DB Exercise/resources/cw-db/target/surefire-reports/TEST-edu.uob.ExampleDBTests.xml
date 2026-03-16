@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="edu.uob.ExampleDBTests" time="0.107" tests="12" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="17"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/home/ax25117/Desktop/Bristol/JAVA2025/Weekly Workbooks/07 DB Exercise/resources/cw-db/target/test-classes:/home/ax25117/Desktop/Bristol/JAVA2025/Weekly Workbooks/07 DB Exercise/resources/cw-db/target/classes:/home/ax25117/.m2/repository/org/junit/jupiter/junit-jupiter/5.8.2/junit-jupiter-5.8.2.jar:/home/ax25117/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2.jar:/home/ax25117/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2.jar:/home/ax25117/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/ax25117/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.8.2/junit-jupiter-params-5.8.2.jar:/home/ax25117/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.8.2/junit-jupiter-engine-5.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-engine/1.8.2/junit-platform-engine-1.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-suite/1.8.2/junit-platform-suite-1.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-suite-api/1.8.2/junit-platform-suite-api-1.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-suite-engine/1.8.2/junit-platform-suite-engine-1.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-suite-commons/1.8.2/junit-platform-suite-commons-1.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-launcher/1.8.2/junit-platform-launcher-1.8.2.jar:"/>
+    <property name="java.vm.vendor" value="Red Hat, Inc."/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://www.redhat.com/"/>
+    <property name="os.name" value="Linux"/>
+    <property name="java.vm.specification.version" value="17"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="GB"/>
+    <property name="sun.boot.library.path" value="/usr/lib/jvm/java-17-openjdk-17.0.18.0.8-1.el8.x86_64/lib"/>
+    <property name="sun.java.command" value="/home/ax25117/Desktop/Bristol/JAVA2025/Weekly Workbooks/07 DB Exercise/resources/cw-db/target/surefire/surefirebooter739664045841298233.jar /home/ax25117/Desktop/Bristol/JAVA2025/Weekly Workbooks/07 DB Exercise/resources/cw-db/target/surefire 2026-03-16T12-21-05_342-jvmRun1 surefire5597150760108823846tmp surefire_04753229210062809800tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="/home/ax25117/Desktop/Bristol/JAVA2025/Weekly Workbooks/07 DB Exercise/resources/cw-db/target/test-classes:/home/ax25117/Desktop/Bristol/JAVA2025/Weekly Workbooks/07 DB Exercise/resources/cw-db/target/classes:/home/ax25117/.m2/repository/org/junit/jupiter/junit-jupiter/5.8.2/junit-jupiter-5.8.2.jar:/home/ax25117/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2.jar:/home/ax25117/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2.jar:/home/ax25117/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/ax25117/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.8.2/junit-jupiter-params-5.8.2.jar:/home/ax25117/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.8.2/junit-jupiter-engine-5.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-engine/1.8.2/junit-platform-engine-1.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-suite/1.8.2/junit-platform-suite-1.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-suite-api/1.8.2/junit-platform-suite-api-1.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-suite-engine/1.8.2/junit-platform-suite-engine-1.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-suite-commons/1.8.2/junit-platform-suite-commons-1.8.2.jar:/home/ax25117/.m2/repository/org/junit/platform/junit-platform-launcher/1.8.2/junit-platform-launcher-1.8.2.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/home/ax25117"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2026-01-20"/>
+    <property name="java.home" value="/usr/lib/jvm/java-17-openjdk-17.0.18.0.8-1.el8.x86_64"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/home/ax25117/Desktop/Bristol/JAVA2025/Weekly Workbooks/07 DB Exercise/resources/cw-db"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="surefire.real.class.path" value="/home/ax25117/Desktop/Bristol/JAVA2025/Weekly Workbooks/07 DB Exercise/resources/cw-db/target/surefire/surefirebooter739664045841298233.jar"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="17.0.18+8-LTS"/>
+    <property name="user.name" value="ax25117"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="4.18.0-553.97.1.el8_10.x86_64"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="(Red_Hat-17.0.18.0.8-1)"/>
+    <property name="localRepository" value="/home/ax25117/.m2/repository"/>
+    <property name="java.vendor.url.bug" value="https://access.redhat.com/support/cases/"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="java.version" value="17.0.18"/>
+    <property name="user.dir" value="/home/ax25117/Desktop/Bristol/JAVA2025/Weekly Workbooks/07 DB Exercise/resources/cw-db"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="java.vendor" value="Red Hat, Inc."/>
+    <property name="java.vm.version" value="17.0.18+8-LTS"/>
+    <property name="java.specification.maintenance.version" value="1"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="61.0"/>
+  </properties>
+  <testcase name="testUseDatabase" classname="edu.uob.ExampleDBTests" time="0.025"/>
+  <testcase name="testRelationalOperators" classname="edu.uob.ExampleDBTests" time="0.013"/>
+  <testcase name="testReservedKeywords" classname="edu.uob.ExampleDBTests" time="0.006"/>
+  <testcase name="testAlterTableCommand" classname="edu.uob.ExampleDBTests" time="0.006"/>
+  <testcase name="testDropTable" classname="edu.uob.ExampleDBTests" time="0.004"/>
+  <testcase name="testLikeOperator" classname="edu.uob.ExampleDBTests" time="0.008"/>
+  <testcase name="testQueryID" classname="edu.uob.ExampleDBTests" time="0.007"/>
+  <testcase name="testBasicCreateAndQuery" classname="edu.uob.ExampleDBTests" time="0.011"/>
+  <testcase name="testRobustErrorHandling" classname="edu.uob.ExampleDBTests" time="0.001"/>
+  <testcase name="testUpdateCommand" classname="edu.uob.ExampleDBTests" time="0.007"/>
+  <testcase name="testTablePersistsAfterRestart" classname="edu.uob.ExampleDBTests" time="0.007"/>
+  <testcase name="testForErrorTag" classname="edu.uob.ExampleDBTests" time="0.005"/>
+</testsuite>

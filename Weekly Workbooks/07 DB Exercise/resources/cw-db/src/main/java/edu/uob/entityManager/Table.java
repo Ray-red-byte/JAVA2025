@@ -1,4 +1,5 @@
-package edu.uob;
+package edu.uob.entityManager;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.BufferedWriter;
@@ -73,5 +74,9 @@ public class Table {
 
     public ArrayList<Row> getRows() {
         return this.rows;
+    }
+
+    public String getTableName() {
+        return this.tableName;
     }
 }
